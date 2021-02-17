@@ -24,12 +24,16 @@ services:
       - "backend"
 
   redis:
-    image: "redis:alpine"
+#    image: "redis:alpine"
+#    采用Dockerfile的方式来构建
+    build: "./redis"
     hostname: "redis"
     ports:
       - "6379:6379"
     volumes:
-      - "./redis:/data"
+      - "./redis/data:/data"
+      - "./redis/redis.conf:/usr/local/etc/redis/redis.conf"
+      - "./redis/redis.log:/usr/local/redis/redis.log"
     container_name: "redis"
     restart: "always"
     networks:
