@@ -1,0 +1,20 @@
+version: "3"
+services: 
+  redis-master:
+    container_name: "redis-master"
+    build: "./7001"
+    ports: 
+      - "7001:6379"
+    volumes:
+      - "./7001/data:/data"
+      - "./7001/redis.conf:/usr/local/etc/redis/redis.conf"
+      - "./7001/redis.log:/usr/local/redis/redis.log"
+  redis-slave-a:
+    container_name: "redis-slave-a"
+    build: "./7002"
+    ports:
+      - "7002:6379"
+    volumes: 
+#      - "./7002/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
+      - "./7002/redis.conf:/usr/local/etc/redis/redis.conf"
+      - "./7002/redis.log:/usr/local/redis/redis.log"
