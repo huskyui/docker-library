@@ -18,3 +18,12 @@ services:
 #      - "./7002/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
       - "./7002/redis.conf:/usr/local/etc/redis/redis.conf"
       - "./7002/redis.log:/usr/local/redis/redis.log"
+  redis-slave-b:
+    container_name: "redis-slave-b"
+    build: "./7003"
+    ports:
+      - "7003:6379"
+    volumes:
+      #      - "./7003/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
+      - "./7003/redis.conf:/usr/local/etc/redis/redis.conf"
+      - "./7003/redis.log:/usr/local/redis/redis.log"
