@@ -9,6 +9,8 @@ services:
       - "./7001/data:/data"
       - "./7001/redis.conf:/usr/local/etc/redis/redis.conf"
       - "./7001/redis.log:/usr/local/redis/redis.log"
+    networks:
+      - "backend"
   redis-slave-a:
     container_name: "redis-slave-a"
     build: "./7002"
@@ -18,12 +20,47 @@ services:
 #      - "./7002/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
       - "./7002/redis.conf:/usr/local/etc/redis/redis.conf"
       - "./7002/redis.log:/usr/local/redis/redis.log"
+    networks:
+      - "backend"
   redis-slave-b:
     container_name: "redis-slave-b"
     build: "./7003"
     ports:
       - "7003:6379"
     volumes:
-      #      - "./7003/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
+#      - "./7003/data:/data"   ### 注意这句话在windows系统运行出错，但是linux中没有影响
       - "./7003/redis.conf:/usr/local/etc/redis/redis.conf"
       - "./7003/redis.log:/usr/local/redis/redis.log"
+    networks:
+      - "backend"
+  redis-sentinel:
+    container_name: "redis-sentinel"
+    hostname: "redis-sentinel"
+    image: "redis:alpine"
+    command: ["redis-server","/usr/local/etc/redis/sentinel.conf","--sentinel"]
+    ports:
+      - "26379:26379"
+    volumes:
+      - "./sentinel:/usr/local/etc/redis"
+    networks:
+      - "backend"
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis-master:redis-master,redis-slave-a:redis-slave-a,redis-slave-b:redis-slave-b
+    ports:
+      - "7500:8081"
+    networks:
+      - "backend"
+  redis-web:
+    image: "huskyui/redis-lua-test:latest"
+    ports:
+      - "8080:8080"
+    container_name: "redis-web"
+    networks:
+      - "backend"
+networks:
+  "backend":
