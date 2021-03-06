@@ -1,0 +1,34 @@
+version: "3"
+services:
+  mysql-master:
+    build: mysql-master
+    hostname: "mysql-master"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=happyday"
+      - "MYSQL_DATABASE=replicas_db"
+    volumes:
+      - "./mysql-master/data:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    networks:
+      - "backend"
+    restart: "always"
+    container_name: "mysql-master"
+  mysql-slave:
+    build: mysql-slave
+    hostname: "mysql-slave"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=happyday"
+      - "MYSQL_DATABASE=replicas_db"
+    volumes:
+      - "./mysql-slave/data:/var/lib/mysql"
+    ports:
+      - "3307:3306"
+    networks:
+      - "backend"
+    restart: "always"
+    container_name: "mysql-slave"
+
+networks:
+  "backend":
+
