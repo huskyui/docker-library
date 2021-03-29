@@ -21,3 +21,12 @@ Elasticsearch
 # mysql-master-slave
 mysql主从
 
+
+
+# Zookeeper
+
++ standalone mode
++ replicate mode 
+
+
+

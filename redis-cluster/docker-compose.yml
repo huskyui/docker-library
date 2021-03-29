@@ -33,17 +33,28 @@ services:
       - "./7003/redis.log:/usr/local/redis/redis.log"
     networks:
       - "backend"
+#   redis-sentinel:
+#     container_name: "redis-sentinel"
+#     hostname: "redis-sentinel"
+#     image: "redis:alpine"
+#     command: ["redis-server","/usr/local/etc/redis/sentinel.conf","--sentinel"]
+#     ports:
+#       - "26379:26379"
+#     volumes:
+# #      此处出现了/usr/local/etc/redis/sentinel.conf会提示无法创建，permission denied,所以我们直接挂载整个文件夹
+#       - "./sentinel:/usr/local/etc/redis"
+#     networks:
+#       - "backend"
   redis-sentinel:
     container_name: "redis-sentinel"
     hostname: "redis-sentinel"
-    image: "redis:alpine"
-    command: ["redis-server","/usr/local/etc/redis/sentinel.conf","--sentinel"]
-    ports:
-      - "26379:26379"
-    volumes:
-      - "./sentinel:/usr/local/etc/redis"
-    networks:
+    build: sentinel
+    environment: 
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER=5000
+    networks: 
       - "backend"
+
   redis-commander:
     container_name: redis-commander
     hostname: redis-commander
